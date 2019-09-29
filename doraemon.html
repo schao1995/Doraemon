@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <style type="text/css">
+    * {
+      margin: 0;
+      padding: 0;
+    }
+    body{
+      background: #111;
+    }
+    canvas {
+      background: #fff;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas width="600" height="600">当前浏览器不支持Canvas</canvas>
+
+  <script>
+  var c = document.getElementsByTagName("canvas")[0];
+  var ctx = c.getContext("2d");
+  var v = Math.cos;
+  ctx.lineWidth = 3;
+  class CanvasCat {
+    constructor () {
+    }
+    // 基线
+    baseLine (arr) {
+      ctx.beginPath();
+      for (let i = 0; i < arr.length; i++) {
+        ctx.strokeStyle = arr[i].color;
+        ctx.moveTo(arr[i].moveX,arr[i].moveY);
+        ctx.lineTo(arr[i].lineX,arr[i].lineY);
+      }
+      ctx.closePath();
+      ctx.stroke();
+    }
+    // 椭圆
+    ellipse (arr) {
+      for (let i = 0; i < arr.length; i++) {
+        ctx.beginPath();
+        ctx.strokeStyle = "#111";
+        ctx.moveTo(arr[i].moveX, arr[i].Y);
+        // 右上
+        ctx.bezierCurveTo(arr[i].moveX, (arr[i].moveY - arr[i].height), (arr[i].moveX + arr[i].width), (arr[i].moveY - arr[i].height), (arr[i].moveX + arr[i].width), arr[i].moveY);
+        // 右下
+        ctx.bezierCurveTo((arr[i].moveX + arr[i].width), arr[i].moveY, (arr[i].moveX + arr[i].width), (arr[i].moveY + arr[i].height), arr[i].moveX, (arr[i].moveY + arr[i].height));
+        // 左下
+        ctx.bezierCurveTo(arr[i].moveX, (arr[i].moveY + arr[i].height), (arr[i].moveX - arr[i].width), (arr[i].moveY + arr[i].height), (arr[i].moveX - arr[i].width), arr[i].moveY);
+        // 左上
+        ctx.bezierCurveTo((arr[i].moveX - arr[i].width), arr[i].moveY, (arr[i].moveX - arr[i].width), (arr[i].moveY - arr[i].height), arr[i].moveX, (arr[i].moveY - arr[i].height));
+        ctx.fillStyle = arr[i].color;
+        ctx.fill();
+        ctx.closePath();
+        ctx.stroke();
+      }
+    }
+    // 半圆
+    semicircle (arr) {
+      ctx.beginPath();
+      ctx.strokeStyle = "#111";
+      for (let i = 0; i < arr.length; i++) {
+        ctx.moveTo(arr[i].moveX,arr[i].moveY);
+        ctx.bezierCurveTo(arr[i].moveX, (arr[i].moveY + arr[i].height), (arr[i].moveX + arr[i].width * 2), (arr[i].moveY + arr[i].height), (arr[i].moveX + arr[i].width * 2), arr[i].moveY);
+        if (arr[i].isClose) {
+          ctx.closePath();
+        }
+      }
+      ctx.stroke();
+    }
+    // 圆
+    circle (arr) {
+      for (let i = 0; i < arr.length; i++) {
+        ctx.beginPath();
+        ctx.strokeStyle = arr[i].lineColor;
+        ctx.moveTo(arr[i].moveX,arr[i].moveY);
+        ctx.arc(arr[i].x, arr[i].y, arr[i].r, 0, 2 * Math.PI);
+        ctx.fillStyle = arr[i].color;
+        ctx.fill();
+        ctx.closePath();
+        ctx.stroke();
+      }
+    }
+  }
+  var aMeng = new CanvasCat();
+  // aMeng.baseLine([
+  //   {
+  //     moveX: 0,
+  //     moveY: 300,
+  //     lineX: 700,
+  //     lineY: 300,
+  //     color: "#039be6"
+  //   }, 
+  //   {
+  //     moveX: 300,
+  //     moveY: 0,
+  //     lineX: 300,
+  //     lineY: 600,
+  //     color: "red"
+  //   }, 
+  //   {
+  //     moveX: 0,
+  //     moveY: 50,
+  //     lineX: 600,
+  //     lineY: 50,
+  //     color: "red"
+  //   }, 
+  //   {
+  //     moveX: 0,
+  //     moveY: 550,
+  //     lineX: 600,
+  //     lineY: 550,
+  //     color: "red"
+  //   }, 
+  //   {
+  //     moveX: 0,
+  //     moveY: 360,
+  //     lineX: 600,
+  //     lineY: 360,
+  //     color: "red"
+  //   }
+  // ]);
+
+  // 身体
+  ctx.beginPath();
+  ctx.strokeStyle = "#111";
+  ctx.moveTo(220, 320);
+  ctx.quadraticCurveTo(150, 405, 190, 550);
+  ctx.bezierCurveTo(190, 550, 190, 530, 300, 530);
+  ctx.bezierCurveTo(300, 530, 410, 530, 410, 550);
+  ctx.quadraticCurveTo(455, 425, 380, 320);
+  ctx.fillStyle = "#039be6";
+  ctx.fill();
+  ctx.closePath();
+  ctx.stroke();
+  // 肚子
+  aMeng.ellipse([
+    {
+      moveX: 300,
+      moveY: 430,
+      width: 90,
+      height: 75,
+      color: "#fff"
+    }
+  ]);
+  // 口袋
+  aMeng.semicircle([
+    {
+      moveX: 230,
+      moveY: 420,
+      width: 70,
+      height: 90,
+      isClose: true
+    }
+  ]);
+  // 脑袋
+  aMeng.ellipse([
+    { // 外圆
+      moveX: 300,
+      moveY: 205,
+      width: 160,
+      height: 155,
+      color: "#039be6"
+    },
+    { // 内圆
+      moveX: 300,
+      moveY: 235,
+      width: 140,
+      height: 120,
+      color: "#fff"
+    },
+    { // 左眼
+      moveX: 270,
+      moveY: 120,
+      width: 30,
+      height: 40,
+      color: "#fff"
+    },
+    { // 左眼珠
+      moveX: 285,
+      moveY: 130,
+      width: 8,
+      height: 10,
+      color: "#111"
+    },
+    { // 左眼珠高光
+      moveX: 287,
+      moveY: 130,
+      width: 5,
+      height: 6,
+      color: "#fff"
+    },
+    { // 右眼
+      moveX: 330,
+      moveY: 120,
+      width: 30,
+      height: 40,
+      color: "#fff"
+    },
+    { // 右眼珠
+      moveX: 315,
+      moveY: 130,
+      width: 8,
+      height: 10,
+      color: "#111"
+    },
+    { // 右眼珠高光
+      moveX: 313,
+      moveY: 130,
+      width: 5,
+      height: 6,
+      color: "#fff"
+    }
+  ]);
+
+  // 嘴巴
+  aMeng.semicircle([
+    {
+      moveX: 200,
+      moveY: 205,
+      width: 100,
+      height: 120,
+      isClose: false
+    }
+  ]);
+  // 胡子
+  aMeng.baseLine([ 
+    { // 鼻子到嘴巴的线
+      moveX: 300,
+      moveY: 180,
+      lineX: 300,
+      lineY: 294,
+      color: "#111"
+    },
+    { // 左中
+      moveX: 150,
+      moveY: 200,
+      lineX: 250,
+      lineY: 200,
+      color: "#111"
+    },
+    { // 右中
+      moveX: 350,
+      moveY: 200,
+      lineX: 450,
+      lineY: 200,
+      color: "#111"
+    },
+    {  // 左上
+      moveX: 160,
+      moveY: 150,
+      lineX: 250,
+      lineY: 180,
+      color: "#111"
+    },
+    { // 右上
+      moveX: 440,
+      moveY: 150,
+      lineX: 350,
+      lineY: 180,
+      color: "#111"
+    },
+    { // 左下
+      moveX: 160,
+      moveY: 250,
+      lineX: 250,
+      lineY: 220,
+      color: "#111"
+    },
+    { // 右下
+      moveX: 440,
+      moveY: 250,
+      lineX: 350,
+      lineY: 220,
+      color: "#111"
+    }
+  ]);
+  // 红鼻子
+  aMeng.circle([
+    {
+      x: 300,
+      y: 165,
+      r: 20,
+      color: "#e30011",
+      lineColor: "#111"
+    }
+  ]);
+  // 红鼻子上的高光部分
+  aMeng.circle([
+    {
+      x: 295,
+      y: 160,
+      r: 5,
+      color: "#fff",
+      lineColor: "#fff"
+    }
+  ]);
+  // 铜锣烧
+  aMeng.ellipse([
+    { // 整体
+      moveX: 300,
+      moveY: 340,
+      width: 80,
+      height: 55,
+      color: "#a06c5e"
+    }
+  ]);
+  // 铜锣烧阴影
+  aMeng.semicircle([
+    {
+      moveX: 220,
+      moveY: 340,
+      width: 80,
+      height: 50,
+      isClose: false
+    }
+  ]);
+  // 左胳膊
+  ctx.beginPath();
+  ctx.moveTo(200, 340);
+  ctx.quadraticCurveTo(155, 360, 160, 400);
+  ctx.quadraticCurveTo(170, 440, 200, 420);
+  ctx.quadraticCurveTo(235, 400, 230, 360);
+  ctx.fillStyle = "#039be6";
+  ctx.fill();
+  ctx.closePath();
+  ctx.stroke();
+  // 右胳膊
+  ctx.beginPath();
+  ctx.moveTo(400, 340);
+  ctx.quadraticCurveTo(450, 360, 440, 400);
+  ctx.quadraticCurveTo(430, 430, 400, 420);
+  ctx.quadraticCurveTo(365, 400, 370, 360);
+  ctx.fillStyle = "#039be6";
+  ctx.fill();
+  ctx.closePath();
+  ctx.stroke();
+  // 手
+  aMeng.circle([
+    { // 左手
+      x: 220,
+      y: 340,
+      r: 30,
+      color: "#fff",
+      lineColor: "#111"
+    },
+    { // 右手
+      x: 380,
+      y: 340,
+      r: 30,
+      color: "#fff",
+      lineColor: "#111"
+    }
+  ]);
+
+  // 脚
+  aMeng.ellipse([
+    { // 左脚
+      moveX: 190,
+      moveY: 500,
+      width: 60,
+      height: 80,
+      color: "#fff"
+    },
+    { // 右脚
+      moveX: 410,
+      moveY: 500,
+      width: 60,
+      height: 80,
+      color: "#fff"
+    }
+  ]);
+  </script>
+</body>
+
+</html>
